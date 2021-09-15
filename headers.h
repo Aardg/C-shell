@@ -12,3 +12,7 @@
 #include<time.h>
 #include<dirent.h>
 #include "myfunction.h"
+
+
+char home_dir[10000];
+int home_dirsz;

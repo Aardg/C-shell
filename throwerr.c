@@ -3,6 +3,5 @@
 void throwerr(char err[])
 {
     perror(err);
-    exit(1);
-
+    return;
 }

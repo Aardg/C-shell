@@ -5,7 +5,6 @@ bin-release/
 [Bb]in/
 
 .settings/
-test/
 
 *.swf
 *.air

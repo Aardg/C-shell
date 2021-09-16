@@ -3,7 +3,6 @@
 void prompt()
 {
     int flag;
-    int run;
     char *h_name, u_name;
     long unsigned int lim = 10000;
     char *comm;
@@ -39,6 +38,7 @@ void prompt()
     // }
     home_dirsz = strlen(home_dir);
     strcpy(curdir_name, home_dir);
+    strcpy(prev_dir, home_dir);
     run = 1;
     while (run)
     {
@@ -47,12 +47,12 @@ void prompt()
         printf("\033[0;36m");
         printf("%s@%s : ", gu_name->pw_name, h_name);
         printf("\033[0m");
-        if(getcwd(curdir_name,1000)==NULL)
+        if (getcwd(curdir_name, 1000) == NULL)
         {
             throwerr("directory nhi mili");
         }
         //printing current directory
-        if (strcmp(curdir_name,home_dir) == 0)
+        if (strcmp(curdir_name, home_dir) == 0)
             printf("~ $ ");
         else
         {
@@ -66,7 +66,7 @@ void prompt()
             }
             if (rel == home_dirsz)
             {
-                printf(" ~ ");
+                printf(" ~");
                 for (int i = home_dirsz; i < strlen(curdir_name); i++)
                     printf("%c", curdir_name[i]);
                 printf(" $ ");
@@ -117,10 +117,9 @@ void prompt()
                 token = strtok(NULL, " \t");
                 sub_commands += 1;
             }
+            if (sub_commands != 0)
+                excommand(trim_comm, sub_commands);
 
-            excommand(trim_comm, sub_commands);
-
-            printf("\n");
             free(trim_comm);
         }
         free(sep_comm);

@@ -1,36 +1,49 @@
 #include "headers.h"
 #include "myfunction.h"
 
-void excommand(char **command, int num)
+void excommand(char **command, int num, int *numbg, char **bgcmds, int *bgpid)
 {
 
-    // echo
-    if (strcmp(*(command + 0), "echo") == 0)
-        ex_echo(command, num);
-
-    if (strcmp(*(command + 0), "cd") == 0)
-        ex_cd(command, num);
-
-    if (strcmp(*(command + 0), "pwd") == 0)
+    // for fg commands
+    if (strcmp(*(command + num - 1), "&") != 0)
     {
-        char cur_dir[10000];
+        if (strcmp(*(command + 0), "echo") == 0)
+            ex_echo(command, num);
 
-        if (getcwd(cur_dir, 10000) == NULL)
+        else if (strcmp(*(command + 0), "cd") == 0)
+            ex_cd(command, num);
+
+        else if (strcmp(*(command + 0), "repeat") == 0)
+            ex_repeat(command, num, numbg, bgcmds, bgpid);
+
+        else if (strcmp(*(command + 0), "ls") == 0)
+            ex_ls(command, num);
+
+        else if (strcmp(*(command + 0), "pwd") == 0)
         {
-            throwerr("cannot get home directory");
+            char *dir = malloc(sizeof(char *) * 10000);
+            if (getcwd(dir, 10000) == NULL)
+            {
+                throwerr("cannot get current directory");
+            }
+
+            printf("%s\n", dir);
         }
 
-        printf("%s\n", cur_dir);
+        else if (strcmp(*(command + 0), "pinfo") == 0)
+            ex_pinfo(command, num);
+
+        else if (strcmp(*(command + 0), "exit()") == 0)
+        {
+            printf("exiting myshell");
+            run = 0;
+        }
+
+        else
+            ex_sys(command, num);
     }
-    if (strcmp(*(command + 0), "repeat") == 0)
-        ex_repeat(command, num);
-
-    if (strcmp(*(command + 0), "ls") == 0)
-        ex_ls(command, num);
-
-    if (strcmp(*(command + 0), "exit()") == 0)
+    else
     {
-        printf("exiting myshell");
-        run=0;
+        ex_bg(command, num, numbg, bgcmds, bgpid);
     }
 }

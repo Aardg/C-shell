@@ -10,31 +10,43 @@ void ex_cd(char **command, int num)
     }
     if (num == 1 || strcmp(*(command + 1), "~") == 0)
     {
+        char cur_dir[10000];
+        if (getcwd(cur_dir, 10000) == NULL)
+        {
+            throwerr("cannot get current directory");
+        }
+        strcpy(prev_dir, cur_dir);
         int x = chdir(home_dir);
         if (x == -1)
         {
-            throwerr("cdeez nuts");
+            throwerr("cd : ");
             return;
         }
     }
-    if (num == 1 || strcmp(*(command + 1), "-") == 0)
+    else if (strcmp(*(command + 1), "-") == 0)
     {
         char cur_dir[10000];
         if (getcwd(cur_dir, 10000) == NULL)
         {
-            throwerr("cannot get home directory");
+            throwerr("cannot get current directory");
         }
+        
         int x = chdir(prev_dir);
         if (x == -1)
         {
             throwerr("cd : ");
             return;
         }
-
         strcpy(prev_dir, cur_dir);
+
     }
     else
     {
+        char cur_dir[10000];
+        if (getcwd(cur_dir, 10000) == NULL)
+        {
+            throwerr("cannot get current directory");
+        }
         if (*(command + 1)[0] == '~')
         {
 
@@ -50,7 +62,7 @@ void ex_cd(char **command, int num)
             int x = chdir(finpath);
             if (x == -1)
             {
-                throwerr("cdeez nuts");
+                throwerr("cd");
                 return;
             }
             return;
@@ -59,9 +71,10 @@ void ex_cd(char **command, int num)
         int x = chdir(*(command + 1));
         if (x == -1)
         {
-            throwerr("cdeez nuts");
+            throwerr("cd");
             return;
         }
+        strcpy(prev_dir, cur_dir);
     }
     return;
 }

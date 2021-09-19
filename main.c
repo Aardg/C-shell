@@ -4,5 +4,6 @@
 int main()
 {
     prompt();
+    printf(" exiting myshell ");
     return 0;
 }

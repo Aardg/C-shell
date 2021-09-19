@@ -6,4 +6,5 @@ void ex_echo(char **command, int num)
     {
         printf("%s ", *(command + i));
     }
+    printf("\n");
 }

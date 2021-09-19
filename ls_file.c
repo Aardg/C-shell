@@ -43,6 +43,8 @@ void ex_ls(char **command, int num)
     {
         // ls of other directories
         // strcat(entry,"%d,%d,%d,%s\n", lf,af,ef,*(args + j));
+        if(num_dir>1)
+            printf("%s :\n",*(args+j));
         char *path = malloc(sizeof(char *) * 1000);
         if ((*(args + j))[0] == '~')
         {
@@ -140,7 +142,7 @@ void ex_ls(char **command, int num)
                                 sprintf(details, "%ld  %s  %s %ld", t.st_nlink, getpwuid(t.st_uid)->pw_name, getgrgid(t.st_gid)->gr_name, t.st_size);
                                 strcat(entry, details);
                                 dt = *(gmtime(&t.st_ctime));
-                                sprintf(details, " %s %d %d:%d", month[dt.tm_mon], dt.tm_mday, dt.tm_hour, dt.tm_min);  
+                                sprintf(details, " %s %d %d:%d ", month[dt.tm_mon], dt.tm_mday, dt.tm_hour, dt.tm_min);  
                                 strcat(entry, details);
                             }
                             strcat(entry, content->d_name);
@@ -149,6 +151,7 @@ void ex_ls(char **command, int num)
                     }
                 }
                 closedir(dir);
+                printf("\n");
             }
             else
             {

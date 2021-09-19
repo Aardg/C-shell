@@ -10,6 +10,19 @@ void prompt()
     char relative[10000];
     char curdir_name[10000];
 
+    int *bgpid = malloc(sizeof(int *) * 1000);
+    char **bgcmds = malloc(1000 * sizeof(char **));
+    int numbg = 0;
+    // get home directory
+    if (getcwd(home_dir, 10000) == NULL)
+    {
+        throwerr("cannot get home directory");
+    }
+
+    home_dirsz = strlen(home_dir);
+    strcpy(curdir_name, home_dir);
+    strcpy(prev_dir, home_dir);
+
     // get user name
     struct passwd *gu_name = getpwuid(geteuid());
     if (gu_name == NULL)
@@ -26,24 +39,12 @@ void prompt()
     }
     h_name = (char *)realloc(h_name, sizeof(char) * (strlen(h_name) + 2));
 
-    // get home directory
-    if (getcwd(home_dir, 10000) == NULL)
-    {
-        throwerr("cannot get home directory");
-    }
-    // if (!(strlen(home_dir) == 1 && home_dir[0] == '/'))
-    // {
-    //     home_dir[strlen(home_dir) + 1] = '\0';
-    //     home_dir[strlen(home_dir)] = '/';
-    // }
-    home_dirsz = strlen(home_dir);
-    strcpy(curdir_name, home_dir);
-    strcpy(prev_dir, home_dir);
     run = 1;
     while (run)
     {
 
         // print username@host
+        fflush(stdout);
         printf("\033[0;36m");
         printf("%s@%s : ", gu_name->pw_name, h_name);
         printf("\033[0m");
@@ -51,6 +52,7 @@ void prompt()
         {
             throwerr("directory nhi mili");
         }
+
         //printing current directory
         if (strcmp(curdir_name, home_dir) == 0)
             printf("~ $ ");
@@ -85,7 +87,7 @@ void prompt()
         char *token = strtok(comm, ";");
         int num_commands = 0, maxcom = 1000;
 
-        //breaking compound commands into its individual commands
+        // breaking compound commands into its individual commands
         while (token != NULL)
         {
             if (num_commands == maxcom)
@@ -111,16 +113,34 @@ void prompt()
                 if (sub_commands == maxcom)
                 {
                     maxcom += 1000;
-                    sep_comm = (char **)realloc(trim_comm, maxcom * sizeof(char *));
+                    trim_comm = (char **)realloc(trim_comm, maxcom * sizeof(char *));
                 }
                 *(trim_comm + sub_commands) = token;
                 token = strtok(NULL, " \t");
                 sub_commands += 1;
             }
             if (sub_commands != 0)
-                excommand(trim_comm, sub_commands);
+                excommand(trim_comm, sub_commands, &numbg, bgcmds, bgpid);
 
             free(trim_comm);
+        }
+        int status;
+        // printf("comning here %d\n", (numbg));
+        for (int i = 0; i < (numbg); i++)
+        {
+            if (*(bgpid + i) != 0)
+            {
+                // printf("%d", *(bgpid + i));
+                if (waitpid(*(bgpid + i), &status, WNOHANG) == *(bgpid + i))
+                {
+                    if (WIFEXITED(status))
+                        printf("%s with PID %d exited normally\n", *(bgcmds + i), *(bgpid + i));
+                    else
+                        printf("%s with PID %d exited abnormally\n", *(bgcmds + i), *(bgpid + i));
+                    *(bgpid + i) = 0;
+                    *(bgcmds + i) = "";
+                }
+            }
         }
         free(sep_comm);
     }

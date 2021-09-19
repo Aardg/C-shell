@@ -79,7 +79,7 @@ void ex_ls(char **command, int num)
                     sprintf(fname,"%s/%s",path,content->d_name);
                     if (stat(fname, &t) == 0)
                     {
-                        if ((*(content->d_name) != '.' && af == 0) || af == 1)
+                        if ((*(content->d_name+0) != '.' && af == 0) || af == 1)
                         {
 
                             struct tm dt;
@@ -141,7 +141,7 @@ void ex_ls(char **command, int num)
 
                                 sprintf(details, "%ld  %s  %s %ld", t.st_nlink, getpwuid(t.st_uid)->pw_name, getgrgid(t.st_gid)->gr_name, t.st_size);
                                 strcat(entry, details);
-                                dt = *(gmtime(&t.st_ctime));
+                                
                                 sprintf(details, " %s %d %d:%d ", month[dt.tm_mon], dt.tm_mday, dt.tm_hour, dt.tm_min);  
                                 strcat(entry, details);
                             }
@@ -215,7 +215,7 @@ void ex_ls(char **command, int num)
 
                     sprintf(details, "%ld  %s  %s %ld", s.st_nlink, getpwuid(s.st_uid)->pw_name, getgrgid(s.st_gid)->gr_name, s.st_size);
                     strcat(entry, details);
-                    dt = *(gmtime(&s.st_ctime));
+                    
                     sprintf(details, " %s %d %d:%d ", month[dt.tm_mon], dt.tm_mday, dt.tm_hour, dt.tm_min);
                     strcat(entry, details);
                 }

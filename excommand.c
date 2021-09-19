@@ -35,8 +35,8 @@ void excommand(char **command, int num, int *numbg, char **bgcmds, int *bgpid)
 
         else if (strcmp(*(command + 0), "exit()") == 0)
         {
-            printf("exiting myshell");
             run = 0;
+            return;
         }
 
         else

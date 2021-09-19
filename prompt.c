@@ -40,7 +40,7 @@ void prompt()
     h_name = (char *)realloc(h_name, sizeof(char) * (strlen(h_name) + 2));
 
     run = 1;
-    while (run)
+    while(run)
     {
 
         // print username@host
@@ -119,6 +119,8 @@ void prompt()
                 token = strtok(NULL, " \t");
                 sub_commands += 1;
             }
+
+            // passing out tokenized commands to the function 
             if (sub_commands != 0)
                 excommand(trim_comm, sub_commands, &numbg, bgcmds, bgpid);
 
@@ -144,4 +146,5 @@ void prompt()
         }
         free(sep_comm);
     }
+    return;
 }

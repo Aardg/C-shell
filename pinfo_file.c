@@ -47,7 +47,7 @@ void ex_pinfo(char **command, int num)
         int fd = open(stat_path, O_RDONLY);
         if (fd == -1)
         {
-            printf("Process with thee given PID does not exist");
+            printf("Process with the given PID does not exist");
             return;
         }
         char *data = malloc(sizeof(char *) * 2050);

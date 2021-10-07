@@ -1,11 +1,22 @@
 #include "headers.h"
 #include "myfunction.h"
 
-void ex_sys(char **command, int num)
+void ex_sys(char **command, int num,int in, int out)
 {
+
+    int org_rd = dup(STDIN_FILENO);
+    int org_wr = dup(STDOUT_FILENO);
+
+    dup2(in,STDIN_FILENO);
+    dup2(out,STDOUT_FILENO);
+
     int fl;
-    command = (char **)realloc(command, (num+5) * sizeof(char *));
+    // printf("in the sys file bginning %d",(num+5)*sizeof(char **));
+    fflush(stdout);
+    command = realloc(command, (num+5)*sizeof(char **));
     *(command+num)='\0';
+    // printf("in the sys file after realoc");
+    fflush(stdout);
     fl = fork();
     if(fl==-1)
     {
@@ -25,7 +36,9 @@ void ex_sys(char **command, int num)
     else
     {
         wait(NULL);
-
     }
+    dup2(org_rd,STDIN_FILENO);
+    dup2(org_wr,STDOUT_FILENO);
+
     return;
 }

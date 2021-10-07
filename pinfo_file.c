@@ -1,8 +1,13 @@
 #include "myfunction.h"
 #include "headers.h"
 
-void ex_pinfo(char **command, int num)
+void ex_pinfo(char **command, int num,int in, int out)
 {
+    int org_rd = dup(STDIN_FILENO);
+    int org_wr = dup(STDOUT_FILENO);
+
+    dup2(in,STDIN_FILENO);
+    dup2(out,STDOUT_FILENO);
 
     int fg_flag = 0;
     if (num > 2)
@@ -81,4 +86,6 @@ void ex_pinfo(char **command, int num)
         free(exe_path);
         free(sep_data);
     }
+    dup2(org_rd,STDIN_FILENO);
+    dup2(org_wr,STDOUT_FILENO);
 }

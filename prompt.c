@@ -42,7 +42,8 @@ void prompt()
     run = 1;
     while(run)
     {
-
+        signal(SIGINT,SIG_IGN);
+		signal(SIGTSTP,SIG_IGN);
         // print username@host
         fflush(stdout);
         printf("\033[0;36m");
@@ -81,7 +82,7 @@ void prompt()
 
         // input command
         comm = (char *)malloc(10000 * sizeof(char));
-        sep_comm = (char **)malloc(1000 * sizeof(char *));
+        sep_comm = (char **)malloc(10000 * sizeof(char *));
         getline(&comm, &lim, stdin);
         *(comm + strlen(comm) - 1) = '\0';
         char *token = strtok(comm, ";");
@@ -105,9 +106,9 @@ void prompt()
         for (int j = 0; j < num_commands; j++)
         {
             char **trim_comm;
-            trim_comm = (char **)malloc(1000 * sizeof(char *));
+            trim_comm = (char **)malloc(10000 * sizeof(char *));
             char *token = strtok(*(sep_comm + j), " \t");
-            int sub_commands = 0, maxcom = 1000;
+            int sub_commands = 0, maxcom = 10000;
             while (token != NULL)
             {
                 if (sub_commands == maxcom)

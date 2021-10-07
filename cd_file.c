@@ -1,6 +1,6 @@
 #include "headers.h"
 
-void ex_cd(char **command, int num)
+void ex_cd(char **command, int num,int in, int out )
 {
     char test[1000];
     if (num > 2)

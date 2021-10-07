@@ -1,15 +1,16 @@
 #include "headers.h"
+#include "myfunction.h"
 
-void ex_bg(char **command, int num, int *numbg, char **bgcmds, int *bgpid,int in, int out)
+void ex_redirect(char **command, int num, int *numbg, char **bgcmds, int *bgpid, int in, int out)
 {
+    // printf("*********************in redi\n");
+    // int i=0;
+    // while(*(command+i)!=NULL)
+    // {
+    //     printf("redcomm %s\n",*(command+i));
+    //     i+=1;
+    // }
 
-    num = num - 1;
-    *(command + num) = '\0';
-
-    int pid = getpid();
-    int pgid = getpgid(pid);
-    if (pgid == -1)
-        throwerr("Internal Error occured");
     int out_fd = -2;
     int in_fd = -2;
     int app = 0, org_rd, org_wr, flag, inp_flg = 0, op_flg = 0, ap_flg = 0, our_inp = 0, our_op = 1;
@@ -164,48 +165,57 @@ void ex_bg(char **command, int num, int *numbg, char **bgcmds, int *bgpid,int in
             throwerr("dup2 system call failed");
         our_op = out_fd;
     }
-    int tine = fork();
-    int eid;
-    if (tine < 0)
-        throwerr("forking error");
-    if (tine == 0)
+    // printf("%d %d",our_inp,our_op);
+    // printf("%s",*(sep_commands + 0));
+    if (strcmp(*(sep_commands + 0), "echo") == 0)
+        ex_echo(sep_commands, k, our_inp, our_op);
+
+    else if (strcmp(*(sep_commands + 0), "cd") == 0)
+        ex_cd(sep_commands, k, our_inp, our_op);
+
+    else if (strcmp(*(sep_commands + 0), "repeat") == 0)
+        ex_repeat(sep_commands, k, numbg, bgcmds, bgpid, our_inp, our_op);
+
+    else if (strcmp(*(sep_commands + 0), "ls") == 0)
+        ex_ls(sep_commands, k, our_inp, our_op);
+
+    else if (strcmp(*(sep_commands + 0), "pwd") == 0)
     {
-        setpgid(tine, tine);
-
-        eid = execvp(*(sep_commands), sep_commands);
-        if (eid == -1)
-            throwerr("mhl");
-    }
-    else if (tine > 0)
-    {
-
-        tcsetpgrp(STDIN_FILENO, pgid);
-
-        setpgid(tine, tine);
-        printf("[%d] %d \n", *(numbg) + 1, tine);
-
-
-        int free;
-        for (free = 0; free <= *(numbg); free++)
+        if (k > 1)
         {
-    
-            if (*(bgpid + free) == 0)
+            throwerr("too many args");
+        }
+        else
+        {
+            char *dir = malloc(sizeof(char *) * 10000);
+            if (getcwd(dir, 10000) == NULL)
             {
-                *(bgpid + free) = tine;
-
-                break;
+                throwerr("cannot get current directory");
             }
-        }
-    
-        *(bgcmds + free) = malloc(100 * sizeof(char *));
-        strcpy(*(bgcmds + free), *(sep_commands + 0));
-        if (free == (*numbg))
-        {
-            
-            (*numbg) = (*numbg)+1;
+
+            printf("%s\n", dir);
         }
     }
-    dup2(org_rd,STDIN_FILENO);
-    dup2(org_wr,STDOUT_FILENO);
-    return;
+
+    else if (strcmp(*(sep_commands + 0), "pinfo") == 0)
+        ex_pinfo(sep_commands, k, our_inp, our_op);
+
+    else if (strcmp(*(sep_commands + 0), "exit()") == 0)
+    {
+        run = 0;
+        return;
+    }
+
+    else
+        ex_sys(sep_commands, k, our_inp, our_op);
+
+    dup2(org_rd, STDIN_FILENO);
+
+    dup2(org_wr, STDOUT_FILENO);
+    close(in_fd);
+
+    close(out_fd);
+
+    close(org_wr);
+    close(org_rd);
 }

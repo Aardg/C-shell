@@ -1,8 +1,10 @@
 #include "myfunction.h"
 #include "headers.h"
 
-void ex_ls(char **command, int num)
+void ex_ls(char **command, int num,int in, int out)
 {
+    int org_rd = dup(STDIN_FILENO);
+    int org_wr = dup(STDOUT_FILENO);
     char month[][5] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     int lf = 0, af = 0, ef = 0, num_dir = 0;
     char **args = (char **)malloc(1000 * sizeof(char *));
@@ -229,4 +231,6 @@ void ex_ls(char **command, int num)
             throwerr("ls : ");
         }
     }
+    dup2(org_rd,STDIN_FILENO);
+    dup2(org_wr,STDOUT_FILENO);
 }

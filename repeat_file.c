@@ -1,8 +1,13 @@
 #include "myfunction.h"
 #include "headers.h"
 
-void ex_repeat(char **command, int num, int *numbg, char **bgcmds, int *bgpid)
+void ex_repeat(char **command, int num, int *numbg, char **bgcmds, int *bgpid, int in, int out)
 {
+    int org_rd = dup(STDIN_FILENO);
+    int org_wr = dup(STDOUT_FILENO);
+
+    dup2(in,STDIN_FILENO);
+    dup2(out,STDOUT_FILENO);
     if(num<3)
     {
         throwerr("repeat: insufficient amount of argumnets provided");
@@ -21,7 +26,10 @@ void ex_repeat(char **command, int num, int *numbg, char **bgcmds, int *bgpid)
 
     for(int i=0;i<loop;i++)
     {
-        excommand(command, num-2,numbg,bgcmds,bgpid);
+        excommand(repeated, num-2,numbg,bgcmds,bgpid);
     }
+
+    dup2(org_rd,STDIN_FILENO);
+    dup2(org_wr,STDOUT_FILENO);
     
 }

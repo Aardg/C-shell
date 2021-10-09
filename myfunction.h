@@ -13,6 +13,8 @@ void ex_pinfo(char **command, int num,int in, int out);
 void ex_bg(char **command, int num, int *numbg, char **bgcmds, int *bgpid,int in, int out);
 void ex_pipe(char **command, int num, int *numbg, char **bgcmds, int *bgpid,int in, int out);
 void ex_redirect(char **command, int num, int *numbg, char **bgcmds, int *bgpid,int in, int out);
+void ex_jobs(char **command, int num, int *numbg, char **bgcmds, int *bgpid,int in, int out);
+void ex_sig(char **command, int num, int *numbg, char **bgcmds, int *bgpid,int in, int out);
 
 
 // global variables

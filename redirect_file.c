@@ -175,6 +175,12 @@ void ex_redirect(char **command, int num, int *numbg, char **bgcmds, int *bgpid,
 
     else if (strcmp(*(sep_commands + 0), "repeat") == 0)
         ex_repeat(sep_commands, k, numbg, bgcmds, bgpid, our_inp, our_op);
+    
+    else if (strcmp(*(sep_commands + 0), "jobs") == 0)
+        ex_jobs(sep_commands, k, numbg, bgcmds, bgpid, our_inp, our_op);
+    
+     else if (strcmp(*(sep_commands + 0), "sig") == 0)
+        ex_sig(sep_commands, k, numbg, bgcmds, bgpid, our_inp, our_op);
 
     else if (strcmp(*(sep_commands + 0), "ls") == 0)
         ex_ls(sep_commands, k, our_inp, our_op);

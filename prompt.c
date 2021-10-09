@@ -1,5 +1,8 @@
 #include "headers.h"
-
+void sig_handle()
+{
+    printf("afasdf");
+}
 void prompt()
 {
     int flag;
@@ -42,9 +45,10 @@ void prompt()
     run = 1;
     while(run)
     {
-        signal(SIGINT,SIG_IGN);
-		signal(SIGTSTP,SIG_IGN);
+        // signal(SIGINT,SIG_IGN);
+		// signal(SIGTSTP,sig_handle);
         // print username@host
+        
         fflush(stdout);
         printf("\033[0;36m");
         printf("%s@%s : ", gu_name->pw_name, h_name);
@@ -83,7 +87,12 @@ void prompt()
         // input command
         comm = (char *)malloc(10000 * sizeof(char));
         sep_comm = (char **)malloc(10000 * sizeof(char *));
-        getline(&comm, &lim, stdin);
+        flag=getline(&comm, &lim, stdin);
+        if(flag==-1)
+        {
+            run=0;
+            continue;
+        }
         *(comm + strlen(comm) - 1) = '\0';
         char *token = strtok(comm, ";");
         int num_commands = 0, maxcom = 1000;

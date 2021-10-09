@@ -40,6 +40,12 @@ void excommand(char **command, int num, int *numbg, char **bgcmds, int *bgpid)
             else if (strcmp(*(command + 0), "ls") == 0)
                 ex_ls(command, num, STDIN_FILENO, STDOUT_FILENO);
 
+            else if (strcmp(*(command + 0), "jobs") == 0)
+                ex_jobs(command, num, numbg, bgcmds, bgpid, STDIN_FILENO, STDOUT_FILENO);
+            
+             else if (strcmp(*(command + 0), "sig") == 0)
+                ex_sig(command, num, numbg, bgcmds, bgpid, STDIN_FILENO, STDOUT_FILENO);
+
             else if (strcmp(*(command + 0), "pwd") == 0)
             {
                 char *dir = malloc(sizeof(char *) * 10000);

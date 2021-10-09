@@ -10,12 +10,10 @@ void ex_sys(char **command, int num,int in, int out)
     dup2(in,STDIN_FILENO);
     dup2(out,STDOUT_FILENO);
 
-    int fl;
-    // printf("in the sys file bginning %d",(num+5)*sizeof(char **));
+    int fl,flag;
     fflush(stdout);
     command = realloc(command, (num+5)*sizeof(char **));
     *(command+num)='\0';
-    // printf("in the sys file after realoc");
     fflush(stdout);
     fl = fork();
     if(fl==-1)
@@ -26,6 +24,14 @@ void ex_sys(char **command, int num,int in, int out)
     if(fl==0)
     {
         int tt;
+        tt=setpgid(0,0);
+        if(tt==-1)
+        {
+            throwerr("setpgid");
+            return;
+        }
+        signal(SIGINT,SIG_DFL);
+		signal(SIGTSTP,SIG_DFL);
         tt = execvp(*(command+0),command);
         if(tt==-1)
         {
@@ -35,6 +41,18 @@ void ex_sys(char **command, int num,int in, int out)
     }
     else
     {
+        int tt;
+        tt=setpgid(fl,fl);
+        if(tt==-1)
+        {
+            throwerr("setpgid");
+            return;
+        }
+        signal(SIGTTOU,SIG_IGN);
+        signal(SIGTTOU,SIG_IGN);
+		tcsetpgrp(STDIN_FILENO,fl);
+		signal(SIGTTOU,SIG_DFL);
+		kill(fl,SIGCONT);
         wait(NULL);
     }
     dup2(org_rd,STDIN_FILENO);
